@@ -1,0 +1,316 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Canvas Tab Guitar [TEST]</title>
+	<!--[if IE]><script type="text/javascript" src="lib/excanvas.js"></script><![endif]-->
+
+<style type="text/css">
+div {
+	margin:1em;
+}
+
+</style>
+<script type="text/javascript" src="cvtabguitar.js"></script>
+<script type="text/javascript">
+
+function test_runner(id) {
+	var elm = document.getElementById(id);
+	if(! elm ) { return; }
+	this.stage = elm;
+	
+	this.stage.innerHTML ="<h2>TEST Start</h2>";
+	this.run = function() {
+		var tests = new _test(id);
+		var count = 0;
+		var i = 0;
+		tests.setUp();
+		for (var key in  tests ) {
+			if( typeof(tests[key]) =="function" && key.substring(0,4) =="test" ) {
+				var result = tests[key]();
+				html = ["<strong>TEST " ,i+1," : ",result.name,"</strong><br />",result.summary].join("");
+				if( result.result ) { 
+					html += '⇒<strong style="color:green;">[OK!]</strong>';
+					count++;
+				}
+				else { html +='⇒<strong style="color:red;">[NG!]</strong>'; }
+				
+				html += ["<br>[", count,"/",i+1,"]"].join("");
+				var div = document.createElement('div');
+				div.innerHTML = html;
+				this.stage.appendChild(div);
+				tests.tearDown();
+				i++;
+			}
+		}
+		tests.cleanUp();
+
+		var h2 = document.createElement('h2');
+		if( i != count ) {
+			h2.innerHTML = '<span style="color:red;font-weight:bold;">' + (count-i) + "件のテストに失敗しました。</span>";
+		}
+		else {
+			h2.innerHTML = '<span style="color:green;font-weight:bold;">全件テストに成功しました。</span>';
+		}
+		this.stage.appendChild(h2);
+	};
+}
+
+function _test(id) {
+	var elm = document.getElementById(id);
+	if(! elm ) { return; }
+	this.stage = elm;
+	
+	this.setUp = function() {};
+	this.tearDown = function() {
+		this.stage.appendChild( document.createElement('hr') );	
+	};
+	this.cleanUp = function() {};
+}
+
+// この下はテストコード
+_test.prototype.test_list = function() {
+	
+	var result = {
+		id	:		"testbase1",
+		name	:	"コードリスト件数",
+		summary	:	"348件＋Synonyms5件の合計 353件あればOK"
+	};
+	
+	var i=0;
+	for ( cd in chordLists) { i++;	}
+	
+	if( i == 353 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_c = function() {
+
+	var result = {
+		id	:		"test1",
+		name	:	"「C」表示",
+		summary	:	"「C」がひとつ表示できればOK"
+	};
+	
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var g1 = new tabGuitar(result.id);
+	if( g1.draw("C") == 1 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_ng1 = function() {
+	
+	var result = {
+		id	:		"test2",
+		name	:	"「Ammmm」表示",
+		summary	:	"不正なコード「Ammmm」表示できなければOK"
+	};
+
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var g1 = new tabGuitar( result.id );
+	if( g1.draw("Ammmm") == 0 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_ok3 = function() {
+
+	var result = {
+		id	:		"test3",
+		name	:	"３つ表示、幅400px",
+		summary	:	"C、C7(9,13)、F#m6(9)を表示"
+	};	
+
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var list = [
+		{ "cd" : "C" },{ "cd" : "C7(9,13)" },{ "cd" : "F#m6(9)" },
+	];
+
+	var g1 = new tabGuitar( result.id );
+	if( g1.draw(list,{cvwidth:"400"}) == 3 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_unshi = function() {
+
+	var result = {
+		id	:		"test4",
+		name	:	"運指変更",
+		summary	:	"Bb/A@5x333x"
+	};
+	
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var g1 = new tabGuitar(result.id);
+	if( g1.draw("Bb/A@5x333x") == 1 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_ly = function() {
+
+	var result = {
+		id	:		"test5",
+		name	:	"歌詞の表示",
+		summary	:	"C、F、Fmで歌詞表示"
+	};	
+	
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var list = [
+		{ "cd" : "C",ly:"ぶー" },
+		{ "cd" : "F",ly:"ふー" },
+		{ "cd" : "Fm",ly:"うー" }
+	];
+
+	var g1 = new tabGuitar(result.id);
+	if( g1.draw(list,{cvwidth:"300"}) == 3 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_lyng = function() {
+
+	var result = {
+		id	:		"test6",
+		name	:	"部分非表示",
+		summary	:	"３つのうちひとつが不正なコード"
+	};	
+	
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var list = [
+		{ "cd" : "C",ly:"ぶー" },
+		{ "cd" : "Ammmmmm",ly:"ふー" },
+		{ "cd" : "Fm",ly:"うー" }
+	];
+
+	var g1 = new tabGuitar(result.id);
+	if( g1.draw(list,{cvwidth:"300"}) == 2 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+
+_test.prototype.test_color = function() {
+
+	var result = {
+		id	:		"test7",
+		name	:	"色の変更",
+		summary	:	"背景色、タブの色、文字色の変更"
+	};	
+	
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var list = [
+		{ "cd" : "C",ly:"ぶー" },
+		{ "cd" : "F",ly:"ふー" },
+		{ "cd" : "Fm",ly:"うー" }
+	];
+
+	var params = {
+		cvwidth: "300",
+		bgColor: "#000000",
+		tabColor: "#FFFFFF",
+		lyColor: "#FFFF00",
+	};
+
+	var g1 = new tabGuitar(result.id);
+	if( g1.draw(list,params) == 3 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+
+_test.prototype.test_renzoku = function() {
+
+	var result = {
+		id	:		"test8",
+		name	:	"連続表示",
+		summary	:	"ひとつのタブに違うコードを上書きして６回表示、最後Am7(9,11)"
+	};	
+	
+	var cv = document.createElement('canvas');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var list = [ "C","F","G#add9","A6(9)","C","Am7(9,11)" ];
+	var g1 = new tabGuitar(result.id);
+	
+	var sum =0;
+	for(var i=0; i< list.length; i++) {
+		sum += g1.draw(list[i]);
+	}
+	
+	if( sum == list.length ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+
+_test.prototype.test_renzoku = function() {
+
+	var result = {
+		id	:		"test9",
+		name	:	"canvasじゃない要素を渡す",
+		summary	:	"divのIDを渡してみて表示しなければOK"
+	};	
+	
+	var cv = document.createElement('div');
+	cv.id = result.id;
+	this.stage.appendChild(cv);
+
+	var g1 = new tabGuitar(result.id);
+	if( !g1.draw("C") ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+
+window.onload = function() {
+	var cvTabGuitar = new test_runner("test");
+	cvTabGuitar.run();
+};
+
+</script>
+
+</head>
+<body>
+<div id="cvtest">
+<h1>Canvas Tab Guitar TEST</h1>
+<p>※excanvas.jsでは生成されたcanvas要素を利用できないのでIEではテストが動かず。。遅延読み込みすればよいのか？<br>
+テストに目視以外に何かよい方法はないもんかね。</p>
+<div id="test"></div>
+</div>
+</body>
+</html>

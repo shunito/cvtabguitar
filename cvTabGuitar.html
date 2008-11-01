@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Canvas Tab Guitar</title>
+	<!--[if IE]><script type="text/javascript" src="lib/excanvas.js"></script><![endif]-->
+
+<script type="text/javascript" src="cvtabguitar.js"></script>
+<script type="text/javascript">
+
+window.onload = function() {
+	var g1 = new tabGuitar("tab1");
+	g1.draw("C@x32010");
+
+	var g2 = new tabGuitar("tab2");
+	var list = [
+		{ "cd" : "Cm", "ly":"♪すいめんが" },
+		{ "cd" : "Gm", "ly":"ゆらぐ" },
+		{ "cd" : "Ab", "ly":"かぜの" },
+		{ "cd" : "Bb", "ly":"わが" },
+		{ "cd" : "Eb", "ly":"ひろがる" }
+	];
+	g2.draw(list, {cvwidth:"500"});
+
+};
+
+</script>
+
+</head>
+<body>
+<div id="cvTabGuitar">
+	<h1>Canvas Tab Guitar</h1>
+	<p>Javascriptと&lt;canvas&gt;でギター譜を表示します。</p>
+	
+	<h2>サンプル</h2>
+	<p><canvas id="tab1" class="tabguitar"></canvas></p>
+	<p>歌詞も表示できます。<br /><canvas id="tab2" class="tabguitar"></canvas></p>
+	
+	<h2>使い方</h2>
+	Javascriptを読み込んで以下のようにcanvas要素にIDをつけます。
+	<p style="background-color:#EEE; font-size:0.8em;padding:2em;margin:1em;">
+	<code>
+	&lt;canvas id="tab1"&gt;
+	</code>
+	</p>
+
+	こんな感じでcanvasのIDを指定してインスタンス生成、draw( )にコードを渡してやります。<br />
+	コード＠フレット位置指定で、細かい設定が可能。
+	<p style="background-color:#EEE; font-size:0.8em;padding:2em;margin:1em;">
+	<code>
+	var g1 = new tabGuitar("tab1");<br />
+	g1.draw("C@x32010");	
+	</code>
+	</p>
+
+
+	オブジェクトでコードを複数渡したり、オプションで表示を変えたりできます。
+	<p style="background-color:#EEE; font-size:0.8em;padding:2em;margin:1em;">
+	<code>
+	var list = [<br />
+	　{ "cd" : "Cm", "ly":"♪すいめんが" },<br />
+	　{ "cd" : "Gm", "ly":"ゆらぐ" },<br />
+	　{ "cd" : "Ab", "ly":"かぜの" },<br />
+	　{ "cd" : "Bb", "ly":"わが" },<br />
+	　{ "cd" : "Eb", "ly":"ひろがる" }<br />
+	];<br />
+	g2.draw(list, {cvwidth:"500"});<br />
+	</code>
+	</p>
+
+	渡せるパラメータとデフォルト値<br />
+	<p style="background-color:#EEE; font-size:0.8em;padding:2em;margin:1em;">
+	<code>
+	var params = {<br />
+	　bgColor: "#ffffff",<br />
+	　tabColor: "#000000",<br />
+	　lyColor: "#0000FF",<br />
+	　cvwidth: "100",<br />
+	　cvheight: "64",<br />
+	　outline: true<br />
+	};
+	</code>
+	</p>
+
+	<h2>謝辞</h2>
+	<p>
+	このプログラムは、舘野氏の<a href="http://search.cpan.org/~tateno/GD-Tab-Ukulele-0.01/">GD::Tab::Ukulele</a>にインスパイアされて作成されたにぽたん氏の<a href="http://search.cpan.org/dist/GD-Tab-Guitar/">GD::Tab::Guitar</a>にインスパイアされて作成されました。<br>
+	ギターのコードリストはにぽたん氏のGD::Tab::Guitarより生成。<br />
+	正直まだあんまりJavascriptわかってないので妙な書き方になってるかもしれません。。<br />
+	Javascriptのテストって普通どうやるんだろ？ギター譜が正しいか見た目のテストって難しいね。
+	</p>
+
+	<h2>ToDo？</h2>
+	<p>
+	文字列渡しモードでは歌詞表示できないのをなんとか。<br>
+	縦表示モードとか、大きく表示モードとか。フレット番号を表示して幅を短くしたりとか。<br />
+	繰り返し記号の表示とか、機能強化方面はもっと諸々ありそう。
+	</p>
+
+</div>
+</body>
+</html>
