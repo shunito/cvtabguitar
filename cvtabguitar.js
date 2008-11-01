@@ -3,7 +3,7 @@
 	canvasにギター譜を表示します。
 
 	Author: shunsuke Ito: shunsuke.ito@gmail.com
-	gitub: http://github.com/shunito/cvtabguitar/
+	github: http://github.com/shunito/cvtabguitar/
 	
 	-Sample
 	  HTML :
