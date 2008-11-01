@@ -28,7 +28,7 @@ function test_runner(id) {
 		for (var key in  tests ) {
 			if( typeof(tests[key]) =="function" && key.substring(0,4) =="test" ) {
 				var result = tests[key]();
-				html = ["<strong>TEST " ,i+1," : ",result.name,"</strong><br />",result.summary].join("");
+				var html = ["<strong>TEST " ,i+1," : ",result.name,"</strong><br />",result.summary].join("");
 				if( result.result ) { 
 					html += '⇒<strong style="color:green;">[OK!]</strong>';
 					count++;
@@ -277,7 +277,7 @@ _test.prototype.test_renzoku = function() {
 };
 
 
-_test.prototype.test_renzoku = function() {
+_test.prototype.test_notcanvas = function() {
 
 	var result = {
 		id	:		"test9",
