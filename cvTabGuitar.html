@@ -33,8 +33,10 @@ window.onload = function() {
 	<p>Javascriptと&lt;canvas&gt;でギター譜を表示します。</p>
 	
 	<h2>サンプル</h2>
-	<p><canvas id="tab1" class="tabguitar"></canvas></p>
-	<p>歌詞も表示できます。<br /><canvas id="tab2" class="tabguitar"></canvas></p>
+	<div>
+	<canvas id="tab1" class="tabguitar"></canvas><br />
+	歌詞も表示できます。<br /><canvas id="tab2" class="tabguitar"></canvas>
+	</div>
 	
 	<h2>使い方</h2>
 	Javascriptを読み込んで以下のようにcanvas要素にIDをつけます。
@@ -84,7 +86,7 @@ window.onload = function() {
 
 	<h2>謝辞</h2>
 	<p>
-	このプログラムは、舘野氏の<a href="http://search.cpan.org/~tateno/GD-Tab-Ukulele-0.01/">GD::Tab::Ukulele</a>にインスパイアされて作成されたにぽたん氏の<a href="http://search.cpan.org/dist/GD-Tab-Guitar/">GD::Tab::Guitar</a>にインスパイアされて作成されました。<br>
+	このプログラムは、舘野氏の<a href="http://search.cpan.org/~tateno/GD-Tab-Ukulele-0.01/">GD::Tab::Ukulele</a>にインスパイアされて作成されたにぽたん氏の<a href="http://search.cpan.org/dist/GD-Tab-Guitar/">GD::Tab::Guitar</a>にインスパイアされて作成されました。<br />
 	ギターのコードリストはにぽたん氏のGD::Tab::Guitarより生成。<br />
 	正直まだあんまりJavascriptわかってないので妙な書き方になってるかもしれません。。<br />
 	Javascriptのテストって普通どうやるんだろ？ギター譜が正しいか見た目のテストって難しいね。

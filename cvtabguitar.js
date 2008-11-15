@@ -39,6 +39,7 @@
 **/
 
 
+
 var chordLists = {
 	"C"		:	"x32010",
 	"C6"	:	"x32210",
@@ -391,11 +392,11 @@ var chordLists = {
 };
 
 var synonyms = {
-	'C#' : 'Db',
-	'Eb' : 'D#',
-	'F#' : 'Gb',
-	'G#' : 'Ab',
-	'Bb' : 'A#'
+	"C#" : "Db",
+	"Eb" : "D#",
+	"F#" : "Gb",
+	"G#" : "Ab",
+	"Bb" : "A#"
 };
 
 (function() {
@@ -576,6 +577,7 @@ tabGuitar.prototype.draw = function(chords, options) {
 		outline: true
 	};
 	
+	
 	if( options && typeof(options) == 'object' ) {
 		for( var key in options ) {
 			if( key.match(/^_/) ) { continue; }
@@ -605,4 +607,3 @@ tabGuitar.prototype.draw = function(chords, options) {
 	}
 	return result;
 };
-
