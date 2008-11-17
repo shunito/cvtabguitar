@@ -95,8 +95,13 @@ _test.prototype.test_c = function() {
 	};
 	
 	var cv = document.createElement('canvas');
-	cv.id = result.id;
 	this.stage.appendChild(cv);
+
+	// for IE, excanvas.js
+	if( window.G_vmlCanvasManager ) {
+		cv = window.G_vmlCanvasManager.initElement( cv ); 
+	}
+	cv.id = result.id;
 
 	var g1 = new tabGuitar(result.id);
 	if( g1.draw("C") == 1 ) { result.result = true; }
@@ -239,7 +244,7 @@ _test.prototype.test_color = function() {
 		cvwidth: "300",
 		bgColor: "#000000",
 		tabColor: "#FFFFFF",
-		lyColor: "#FFFF00",
+		lyColor: "#FFFF00"
 	};
 
 	var g1 = new tabGuitar(result.id);
