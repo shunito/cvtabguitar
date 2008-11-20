@@ -408,14 +408,24 @@ var synonyms = {
 function tabGuitar(id) {
 	var elm = document.getElementById(id);
 	if(! elm ) { return; }
-	if(elm.nodeName != "CANVAS") { return; }
-	this.canvas = elm;
+
+	if(elm.nodeName == "CANVAS") {
+    	this.canvas = elm;
+    	if ( ! this.canvas.getContext ){ return; }
+    	this.ctx = this.canvas.getContext('2d');
+	}	
+	else if(elm.nodeName == "DIV") {
+    	var canvas = document.createElement('canvas');
+    	elm.appendChild(canvas);
+    	this.canvas = canvas;
+    	if( window.G_vmlCanvasManager ) {
+    	   this.canvas = window.G_vmlCanvasManager.initElement( this.canvas ); 
+    	}
+    	this.ctx = this.canvas.getContext('2d');
+    }
+	else if(elm.nodeName != "CANVAS") { return; }
 
 	/* CANVAS要素 */
-	if ( ! this.canvas ){ return; }
-	if ( ! this.canvas.getContext ){ return; }
-	/* 2D コンテクストの生成 */
-	this.ctx = this.canvas.getContext('2d');
 	
 	// DrawTextがまだ使えないのでdivを生成してcanvasの上に貼り付け。
 	var stage = document.createElement('div');
@@ -434,8 +444,10 @@ tabGuitar.prototype._init = function() {
 
 	with(this) {
 		stage.innerHTML ="";
-		canvas.height = stage.style.height = params.cvheight;
-		canvas.width = stage.style.width = params.cvwidth;
+		canvas.height = params.cvheight;
+		canvas.width = params.cvwidth;
+		stage.style.height = params.cvheight + "px";
+		stage.style.width = params.cvwidth + "px";
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = params.tabColor;
 		ctx.fillStyle = params.bgColor;

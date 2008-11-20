@@ -94,14 +94,9 @@ _test.prototype.test_c = function() {
 		summary	:	"「C」がひとつ表示できればOK"
 	};
 	
-	var cv = document.createElement('canvas');
-	this.stage.appendChild(cv);
-
-	// for IE, excanvas.js
-	if( window.G_vmlCanvasManager ) {
-		cv = window.G_vmlCanvasManager.initElement( cv ); 
-	}
-	cv.id = result.id;
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
 
 	var g1 = new tabGuitar(result.id);
 	if( g1.draw("C") == 1 ) { result.result = true; }
@@ -118,9 +113,9 @@ _test.prototype.test_ng1 = function() {
 		summary	:	"不正なコード「Ammmm」表示できなければOK"
 	};
 
-	var cv = document.createElement('canvas');
-	cv.id = result.id;
-	this.stage.appendChild(cv);
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
 
 	var g1 = new tabGuitar( result.id );
 	if( g1.draw("Ammmm") == 0 ) { result.result = true; }
@@ -137,12 +132,12 @@ _test.prototype.test_ok3 = function() {
 		summary	:	"C、C7(9,13)、F#m6(9)を表示"
 	};	
 
-	var cv = document.createElement('canvas');
-	cv.id = result.id;
-	this.stage.appendChild(cv);
+	var div = document.createElement('div');
+	this.stage.appendChild(div);
+	div.id = result.id;
 
 	var list = [
-		{ "cd" : "C" },{ "cd" : "C7(9,13)" },{ "cd" : "F#m6(9)" },
+		{ "cd" : "C" },{ "cd" : "C7(9,13)" },{ "cd" : "F#m6(9)" }
 	];
 
 	var g1 = new tabGuitar( result.id );
@@ -160,9 +155,9 @@ _test.prototype.test_unshi = function() {
 		summary	:	"Bb/A@5x333x"
 	};
 	
-	var cv = document.createElement('canvas');
-	cv.id = result.id;
-	this.stage.appendChild(cv);
+	var div = document.createElement('div');
+	this.stage.appendChild(div);
+	div.id = result.id;
 
 	var g1 = new tabGuitar(result.id);
 	if( g1.draw("Bb/A@5x333x") == 1 ) { result.result = true; }
@@ -179,9 +174,9 @@ _test.prototype.test_ly = function() {
 		summary	:	"C、F、Fmで歌詞表示"
 	};	
 	
-	var cv = document.createElement('canvas');
-	cv.id = result.id;
-	this.stage.appendChild(cv);
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
 
 	var list = [
 		{ "cd" : "C",ly:"ぶー" },
@@ -204,9 +199,9 @@ _test.prototype.test_lyng = function() {
 		summary	:	"３つのうちひとつが不正なコード"
 	};	
 	
-	var cv = document.createElement('canvas');
-	cv.id = result.id;
-	this.stage.appendChild(cv);
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
 
 	var list = [
 		{ "cd" : "C",ly:"ぶー" },
@@ -230,9 +225,9 @@ _test.prototype.test_color = function() {
 		summary	:	"背景色、タブの色、文字色の変更"
 	};	
 	
-	var cv = document.createElement('canvas');
-	cv.id = result.id;
-	this.stage.appendChild(cv);
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
 
 	var list = [
 		{ "cd" : "C",ly:"ぶー" },
@@ -263,9 +258,9 @@ _test.prototype.test_renzoku = function() {
 		summary	:	"ひとつのタブに違うコードを上書きして６回表示、最後Am7(9,11)"
 	};	
 	
-	var cv = document.createElement('canvas');
-	cv.id = result.id;
-	this.stage.appendChild(cv);
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
 
 	var list = [ "C","F","G#add9","A6(9)","C","Am7(9,11)" ];
 	var g1 = new tabGuitar(result.id);
@@ -286,11 +281,11 @@ _test.prototype.test_notcanvas = function() {
 
 	var result = {
 		id	:		"test9",
-		name	:	"canvasじゃない要素を渡す",
-		summary	:	"divのIDを渡してみて表示しなければOK"
+		name	:	"canvas/divじゃない要素を渡す",
+		summary	:	"pのIDを渡してみて表示しなければOK"
 	};	
 	
-	var cv = document.createElement('div');
+	var cv = document.createElement('p');
 	cv.id = result.id;
 	this.stage.appendChild(cv);
 
