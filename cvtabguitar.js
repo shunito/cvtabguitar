@@ -418,27 +418,41 @@ function tabGuitar(id) {
     	var canvas = document.createElement('canvas');
     	elm.appendChild(canvas);
     	this.canvas = canvas;
+    	// excanvas.js 対応
     	if( window.G_vmlCanvasManager ) {
     	   this.canvas = window.G_vmlCanvasManager.initElement( this.canvas ); 
     	}
     	this.ctx = this.canvas.getContext('2d');
     }
-	else if(elm.nodeName != "CANVAS") { return; }
-
-	/* CANVAS要素 */
+	else { return; }
 	
 	// DrawTextがまだ使えないのでdivを生成してcanvasの上に貼り付け。
 	var stage = document.createElement('div');
 	stage.style.position = "absolute";
-	stage.style.margin = "0px";
-	stage.style.padding = "0px";
-	stage.style.left = document.body.offsetLeft + this.canvas.offsetLeft + "px";
-	stage.style.top = document.body.offsetTop + this.canvas.offsetTop + "px";
+	stage.style.margin = "0";
+	stage.style.padding = "0";
+
+    // positioning
+	var pos = this._getPos(this.canvas);
+	stage.style.left = pos.x + "px";
+	stage.style.top = pos.y + "px";
 
     var objBody = document.getElementsByTagName("body").item(0); 
     objBody.appendChild(stage);
     this.stage = stage;
 }
+
+tabGuitar.prototype._getPos = function(elm) {
+	var obj = new Object();
+	obj.x = elm.offsetLeft;
+	obj.y = elm.offsetTop;
+	while(elm.offsetParent) {
+		elm = elm.offsetParent;
+		obj.x += elm.offsetLeft;
+		obj.y += elm.offsetTop;
+	}
+	return obj;
+};
 
 tabGuitar.prototype._init = function() {
 
@@ -517,31 +531,34 @@ tabGuitar.prototype._parse = function(chord) {
 	}
 	
 	if( !cdFlet ) { return false; }
-
 	this.ctx.fillStyle = this.params.tabColor;
 
 	var line = cdFlet.length;
 	for( var i=0; i < line; i++ ) {
 		var char = cdFlet.charAt(line-i-1);
+		//ミュート
 		if( char.toLowerCase() == 'x') {
-			//ミュート
-			var px = this.tabMarginLeft - 5;
-			var py = this.tabMarginTop + this.flHeight * i -2;
-			this.ctx.beginPath();
-			this.ctx.moveTo(px, py);
-			this.ctx.lineTo(px+3, py+3);
-			this.ctx.stroke();
-			this.ctx.beginPath();
-			this.ctx.moveTo(px+3, py);
-			this.ctx.lineTo(px, py+3);
-			this.ctx.stroke();
+            with( this) {
+                var px = tabMarginLeft - 5;
+                var py = tabMarginTop + flHeight * i -2;
+                ctx.beginPath();
+                ctx.moveTo(px, py);
+                ctx.lineTo(px+3, py+3);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(px+3, py);
+                ctx.lineTo(px, py+3);
+                ctx.stroke();
+            }
 		}
 		else {
 			var n = parseInt(char);
 			if( n == 0 ) { continue };
-			var px = this.tabMarginLeft + this.flWidth * n -4;
-			var py = this.tabMarginTop + this.flHeight * i -2;
-			this.ctx.fillRect(px ,py ,4 ,4 );
+            with( this) {
+    			var px = tabMarginLeft + flWidth * n -4;
+    			var py = tabMarginTop + flHeight * i -2;
+    			ctx.fillRect(px ,py ,4 ,4 );
+    		}
 		}
 	}
 	
@@ -588,8 +605,7 @@ tabGuitar.prototype.draw = function(chords, options) {
 		cvheight: "64",
 		outline: true
 	};
-	
-	
+
 	if( options && typeof(options) == 'object' ) {
 		for( var key in options ) {
 			if( key.match(/^_/) ) { continue; }

@@ -6,10 +6,7 @@
 	<!--[if IE]><script type="text/javascript" src="lib/excanvas.js"></script><![endif]-->
 
 <style type="text/css">
-div {
-	margin:1em;
-}
-
+div.test { margin:20px;}
 </style>
 <script type="text/javascript" src="cvtabguitar.js"></script>
 <script type="text/javascript">
@@ -28,14 +25,14 @@ function test_runner(id) {
 		for (var key in  tests ) {
 			if( typeof(tests[key]) =="function" && key.substring(0,4) =="test" ) {
 				var result = tests[key]();
-				var html = ["<strong>TEST " ,i+1," : ",result.name,"</strong><br />",result.summary].join("");
+				var html = ["<div class='test'><strong>TEST " ,i+1," : ",result.name,"</strong><br />",result.summary].join("");
 				if( result.result ) { 
 					html += '⇒<strong style="color:green;">[OK!]</strong>';
 					count++;
 				}
 				else { html +='⇒<strong style="color:red;">[NG!]</strong>'; }
 				
-				html += ["<br>[", count,"/",i+1,"]"].join("");
+				html += ["<br />[", count,"/",i+1,"]</div>"].join("");
 				var div = document.createElement('div');
 				div.innerHTML = html;
 				this.stage.appendChild(div);
@@ -308,8 +305,7 @@ window.onload = function() {
 <body>
 <div id="cvtest">
 <h1>Canvas Tab Guitar TEST</h1>
-<p>※excanvas.jsでは生成されたcanvas要素を利用できないのでIEではテストが動かず。。遅延読み込みすればよいのか？<br>
-テストに目視以外に何かよい方法はないもんかね。</p>
+<p>簡易ユニットテスト</p>
 <div id="test"></div>
 </div>
 </body>
