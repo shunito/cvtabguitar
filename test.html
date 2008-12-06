@@ -294,6 +294,141 @@ _test.prototype.test_notcanvas = function() {
 };
 
 
+_test.prototype.test_drawAll = function() {
+
+	var result = {
+		id	:		"test10",
+		name	:	"全件表示",
+		summary	:	"353コード全部表示"
+	};	
+
+    var html ="";
+	var i=0;
+	count = 0;
+	for ( cd in chordLists) {
+    	var cv = document.createElement('div');
+    	cv.id = result.id + "00" + i ;
+    	this.stage.appendChild(cv);
+    	var g1 = new tabGuitar( cv.id );
+	   if( !g1.draw(cd) ) { html += i +"¥r¥n"; }
+	   else { count++; }
+	   i++;
+    }
+    
+  	if( count == 353 ) { result.result = true; }
+	else { result.result = false; }  
+    
+	return result;
+};
+
+_test.prototype.test_kigou = function() {
+
+	var result = {
+		id	:		"test11",
+		name	:	"記号表示",
+		summary	:	"「|:」「:|:」「:|」が表示できればOK"
+	};
+	
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
+
+	var list = [
+		{ "cd" : "|:" },{ "cd" : "C" },{ "cd" : ":|:" },{ "cd" : "F#m6(9)" },{ "cd" : ":|" }
+	];
+
+	var g1 = new tabGuitar( result.id );
+	if( g1.draw(list,{cvwidth:"400"}) == 5 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_space = function() {
+
+	var result = {
+		id	:		"test12",
+		name	:	"「_」スペースの表示",
+		summary	:	"C、F、スペース、Fmで歌詞表示"
+	};	
+	
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
+
+	var list = [
+		{ "cd" : "C",ly:"ぶー" },
+		{ "cd" : "F",ly:"ふー" },
+		{ "cd" : "_" },
+		{ "cd" : "Fm",ly:"うー" }
+	];
+
+	var g1 = new tabGuitar(result.id);
+	if( g1.draw(list,{cvwidth:"400"}) == 4 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_repertNo = function() {
+
+	var result = {
+		id	:		"test13",
+		name	:	"リピートNo",
+		summary	:	"「2-」「1-」などリピートNOが表示できればOK"
+	};
+	
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
+
+	var list = [
+		{ "cd" : "|:" },{ "cd" : "4-" },{ "cd" : "C" },{ "cd" : "F#m6(9)" },{ "cd" : ":|" }
+	];
+
+	var g1 = new tabGuitar( result.id );
+	if( g1.draw(list,{cvwidth:"400"}) == 5 ) { result.result = true; }
+	else { result.result = false; }
+
+	return result;
+};
+
+_test.prototype.test_uke = function() {
+
+	var result = {
+		id	:		"test14",
+		name	:	"ウクレレ記法のコードを表示してみる",
+		summary	:	"|: C _ Am F G7 1 - C :|、2 - C G7 C"
+	};
+	
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
+	var list = [
+		{ "cd" : "|:" },{ "cd" : "C" },{ "cd" : "_" },{ "cd" : "Am" },{ "cd" : "F" },{ "cd" : "G7" },{ "cd" : "1-" },{ "cd" : "C" },{ "cd" : ":|" }
+	];
+
+	var g1 = new tabGuitar( div.id );
+	if( g1.draw(list,{cvwidth:"650"}) == 9 ) { 
+    	result.result = true;
+	 }
+	else { result.result = false; }
+
+	var div2 = document.createElement('div');
+	div2.id = result.id +"002";
+	this.stage.appendChild(div2);
+	var list2 = [
+		{ "cd" : "2-" },{ "cd" : "C" },{ "cd" : "G7" },{ "cd" : "C" }
+	];
+
+	var g2 = new tabGuitar( div2.id );
+    if( g2.draw(list2,{cvwidth:"650"}) == 4 ) { result.result = true; }
+    else { result.result = false; }
+
+	return result;
+};
+
+
 window.onload = function() {
 	var cvTabGuitar = new test_runner("test");
 	cvTabGuitar.run();

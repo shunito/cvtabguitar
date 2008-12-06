@@ -425,7 +425,7 @@ function tabGuitar(id) {
     	this.ctx = this.canvas.getContext('2d');
     }
 	else { return; }
-	
+
 	// DrawTextがまだ使えないのでdivを生成してcanvasの上に貼り付け。
 	var stage = document.createElement('div');
 	stage.style.position = "absolute";
@@ -456,6 +456,21 @@ tabGuitar.prototype._getPos = function(elm) {
 
 tabGuitar.prototype._init = function() {
 
+	// 表示位置や大きさの初期化
+	this.flet = 8;
+	this.line = 6;
+	this.tabMarginTop = 16;
+	this.dpleft = 10;
+	this.flHeight = 6;
+	this.flWidth = 10;
+
+	// シャープにする
+	// https://developer.mozilla.org/ja/Canvas_tutorial/Applying_styles_and_colors
+	// 線のスタイル参照
+
+	this.tabMarginTop -= 0.5;
+
+
 	with(this) {
 		stage.innerHTML ="";
 		canvas.height = params.cvheight;
@@ -474,20 +489,13 @@ tabGuitar.prototype._init = function() {
 	}
 };
 
-tabGuitar.prototype._drawTab = function( num ) {
+tabGuitar.prototype._drawTab = function(  ) {
 	
-	// このへんをparamsにするか思案中
-	this.flet = 8;
-	this.line = 6;
-	this.tabMarginTop = 16;
-	this.tabMarginLeft = 10 + ( 100 * num );
-	this.flHeight = 6;
-	this.flWidth = 10;
+	this.tabMarginLeft = this.dpleft;
 	
 	// シャープにする
 	// https://developer.mozilla.org/ja/Canvas_tutorial/Applying_styles_and_colors
 	// 線のスタイル参照
-	this.tabMarginTop -= 0.5;
 	this.tabMarginLeft -= 0.5;
 
 	with(this) {
@@ -513,25 +521,9 @@ tabGuitar.prototype._drawTab = function( num ) {
 	}
 };
 
-
-tabGuitar.prototype._parse = function(chord) {
-
-	// コード名と運指の分割
-	var cd = chord.split("@");
-	if( cd.length == 1) {
-		var cdName = cd[0];
-		var cdFlet = chordLists[ cdName ];
-	}
-	else if( cd.length > 1) {
-		var cdName = cd[0];
-		var cdFlet = cd[1];
-	}
-	else {
-		return false;
-	}
-	
-	if( !cdFlet ) { return false; }
+tabGuitar.prototype._drawtabguitar = function(cdName, cdFlet) {
 	this.ctx.fillStyle = this.params.tabColor;
+	this._drawTab();
 
 	var line = cdFlet.length;
 	for( var i=0; i < line; i++ ) {
@@ -561,7 +553,6 @@ tabGuitar.prototype._parse = function(chord) {
     		}
 		}
 	}
-	
 	// DrawTextがまだ使えないのでspanを配置。
 	var text = document.createElement('span');
 	text.appendChild( document.createTextNode( cdName ) );
@@ -569,8 +560,148 @@ tabGuitar.prototype._parse = function(chord) {
 	text.style.fontSize ="10px";
 	text.style.position = "absolute";
 	text.style.top = "2px";
-	text.style.left = this.tabMarginLeft + "px";
+	text.style.left = this.dpleft + "px";
 	this.stage.appendChild( text );
+}
+
+tabGuitar.prototype._repeatMark = function(type) {
+
+	this.tabMarginLeft = this.dpleft;	
+	// シャープにする
+	// https://developer.mozilla.org/ja/Canvas_tutorial/Applying_styles_and_colors
+	// 線のスタイル参照
+	
+	if( type == 'start') {
+    	with(this) {
+    	   ctx.fillStyle = params.tabColor;	
+    	   ctx.fillRect(tabMarginLeft, tabMarginTop, 2, flHeight* (this.line-1));
+
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft +8, tabMarginTop +10, 2, 0, Math.PI*2, false);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft +8, tabMarginTop +21, 2, 0, Math.PI*2, false);
+            ctx.fill();
+
+            tabMarginLeft -= 0.5;
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.moveTo(tabMarginLeft +4, tabMarginTop);
+            ctx.lineTo(tabMarginLeft +4, tabMarginTop + flHeight* (this.line-1) );
+            ctx.stroke();
+    	    dpleft += 20;
+    	}
+	}
+	else if( type == 'end') {
+    	with(this) {
+    	   ctx.fillStyle = params.tabColor;	
+    	   ctx.fillRect(tabMarginLeft +6, tabMarginTop, 2, flHeight* (this.line-1));
+
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft, tabMarginTop +10, 2, 0, Math.PI*2, false);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft, tabMarginTop +21, 2, 0, Math.PI*2, false);
+            ctx.fill();
+
+            tabMarginLeft -= 0.5;
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.moveTo(tabMarginLeft +5, tabMarginTop);
+            ctx.lineTo(tabMarginLeft +5, tabMarginTop + flHeight* (this.line-1) );
+            ctx.stroke();
+    	    dpleft += 20;
+    	}
+	}
+	else {
+    	with(this) {
+    	   ctx.fillStyle = params.tabColor;	
+    	   ctx.fillRect(tabMarginLeft +4, tabMarginTop, 2, flHeight* (this.line-1));
+    	   ctx.fillRect(tabMarginLeft +7, tabMarginTop, 2, flHeight* (this.line-1));
+
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft, tabMarginTop +10, 2, 0, Math.PI*2, false);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft, tabMarginTop +21, 2, 0, Math.PI*2, false);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft +12, tabMarginTop +10, 2, 0, Math.PI*2, false);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(tabMarginLeft +12, tabMarginTop +21, 2, 0, Math.PI*2, false);
+            ctx.fill();
+    	    dpleft += 30;
+    	}
+	}
+}
+
+tabGuitar.prototype._repeatNo = function(no) {
+	this.tabMarginLeft = this.dpleft;
+	with(this) {
+	   tabMarginLeft -= 0.5;
+	   ctx.beginPath();
+	   ctx.lineWidth = 1;
+	   ctx.moveTo(tabMarginLeft +18, 10 );
+	   ctx.lineTo(tabMarginLeft +12, 10 );
+	   ctx.lineTo(tabMarginLeft +12, tabMarginTop + flHeight* (this.line-1) );
+	   ctx.stroke();
+	}
+	// DrawTextがまだ使えないのでspanを配置。
+	var text = document.createElement('span');
+	text.appendChild( document.createTextNode( no+"." ) );
+	text.style.color = this.params.tabColor;
+	text.style.fontSize ="10px";
+	text.style.position = "absolute";
+	text.style.top = "2px";
+	text.style.left = this.dpleft + "px";
+	this.stage.appendChild( text );
+	this.dpleft += 30;
+
+}
+
+tabGuitar.prototype._parse = function(chord) {
+
+	// コード名と運指の分割
+	var cd = chord.split("@");
+	if( cd.length == 1) {
+		var cdName = cd[0];
+		var cdFlet = chordLists[ cdName ];
+	}
+	else if( cd.length > 1) {
+		var cdName = cd[0];
+		var cdFlet = cd[1];
+	}
+	
+	// 繰返しNo
+	if(  res = cdName.match(/^(\d+)-/) ) {
+	   cdName = "#";
+	   var no = res[1];
+	}
+	
+	switch( cdName ) {
+	   case '#' :
+    	   this._repeatNo(no);
+	       break;
+	   case '|:' :
+    	   this._repeatMark('start');
+	       break;
+	   case ':|' :
+    	   this._repeatMark('end');
+	       break;
+	   case ':|:' :
+    	   this._repeatMark('endstart');
+	       break;
+	   case '_' :
+	       this.dpleft += 30;
+	       break;
+	   default :
+        	if( !cdFlet ) { return false; }	
+	       this._drawtabguitar(cdName,cdFlet);
+	       this.dpleft += 100;
+	}	
+
 	return true;
 }
 
@@ -579,7 +710,7 @@ tabGuitar.prototype._drawLyrics = function(lyrics) {
 	if(!lyrics) { return; }
 
 	// DrawTextがまだ使えないのでspanで歌詞を配置。
-	var text = document.createElement('span');
+	var text = document.createElement("span");
 	text.appendChild( document.createTextNode( lyrics ) );
 	text.style.color = this.params.lyColor;
 	text.style.width = this.params.cvwidth + "px";
@@ -613,14 +744,13 @@ tabGuitar.prototype.draw = function(chords, options) {
 		}
 	}
 	this.params = params;
+	this._init();
 
 	if( chords && typeof(chords) == 'object' ) {
-		this._init();
 		var count = 0;
 		for(var i=0; i < chords.length; i++ ) {
 			var chord = chords[i].cd;
 			var lyrics =  chords[i].ly;
-			this._drawTab(i);
 			if( this._parse(chord) ) { 
 				this._drawLyrics(lyrics);
 				count++;
@@ -629,8 +759,6 @@ tabGuitar.prototype.draw = function(chords, options) {
 		result = count;
 	}
 	else if( chords && typeof(chords) == 'string' ) {
-		this._init();
-		this._drawTab(0);
 		if( this._parse(chords) ) { result = 1 };
 	}
 	return result;
