@@ -454,6 +454,24 @@ tabGuitar.prototype._getPos = function(elm) {
 	return obj;
 };
 
+tabGuitar.prototype._addSpanText = function(top, left, str, color) {
+	var text = document.createElement('span');
+	text.appendChild( document.createTextNode( str ) );
+	text.style.color = color;
+	text.style.fontSize ="10px";
+	text.style.position = "absolute";
+	text.style.top = top + "px";
+	text.style.left = left + "px";
+	this.stage.appendChild( text );
+}
+
+tabGuitar.prototype._drawLine = function( ctx,sx,sy,ex,ey ) {
+    ctx.beginPath();
+    ctx.moveTo( sx, sy );
+    ctx.lineTo( ex, ey );
+	ctx.stroke();
+}
+
 tabGuitar.prototype._init = function() {
 
 	// 表示位置や大きさの初期化
@@ -467,16 +485,14 @@ tabGuitar.prototype._init = function() {
 	// シャープにする
 	// https://developer.mozilla.org/ja/Canvas_tutorial/Applying_styles_and_colors
 	// 線のスタイル参照
-
 	this.tabMarginTop -= 0.5;
-
 
 	with(this) {
 		stage.innerHTML ="";
 		canvas.height = params.cvheight;
-		canvas.width = params.cvwidth;
 		stage.style.height = params.cvheight + "px";
-		stage.style.width = params.cvwidth + "px";
+    	canvas.width = params.cvwidth;
+        stage.style.width = params.cvwidth + "px";
 		ctx.lineWidth = 1;
 		ctx.strokeStyle = params.tabColor;
 		ctx.fillStyle = params.bgColor;
@@ -489,7 +505,8 @@ tabGuitar.prototype._init = function() {
 	}
 };
 
-tabGuitar.prototype._drawTab = function(  ) {
+
+tabGuitar.prototype._drawTab = function() {
 	
 	this.tabMarginLeft = this.dpleft;
 	
@@ -501,22 +518,19 @@ tabGuitar.prototype._drawTab = function(  ) {
 	with(this) {
 		// 弦の横線
 		for(var i= 0; i < this.line ; i++ ) {
-			ctx.beginPath();
-			ctx.moveTo( tabMarginLeft, tabMarginTop  + i* flHeight);
-			ctx.lineTo( tabMarginLeft + flWidth* flet, tabMarginTop + i* flHeight);
-			ctx.stroke();
+		  _drawLine(ctx,
+		      tabMarginLeft, tabMarginTop  + i* flHeight,
+		      tabMarginLeft + flWidth* flet, tabMarginTop + i* flHeight );
 		}
-		ctx.beginPath();
-		ctx.moveTo(tabMarginLeft, tabMarginTop);
-		ctx.lineTo(tabMarginLeft, tabMarginTop + flHeight* (this.line-1) );
-		ctx.stroke();
+        _drawLine(ctx,
+		  tabMarginLeft, tabMarginTop,
+		  tabMarginLeft, tabMarginTop + flHeight* (this.line-1) );
 
 		// フレットの縦線
 		for(var i= 0; i < flet ; i++ ) {
-			ctx.beginPath();
-			ctx.moveTo(tabMarginLeft +3 +i*flWidth, tabMarginTop);
-			ctx.lineTo(tabMarginLeft +3 +i*flWidth, tabMarginTop + flHeight* (this.line-1) );
-			ctx.stroke();
+		  _drawLine(ctx,
+		      tabMarginLeft +3 +i*flWidth, tabMarginTop,
+		      tabMarginLeft +3 +i*flWidth, tabMarginTop + flHeight* (this.line-1) );
 		}
 	}
 };
@@ -533,14 +547,8 @@ tabGuitar.prototype._drawtabguitar = function(cdName, cdFlet) {
             with( this) {
                 var px = tabMarginLeft - 5;
                 var py = tabMarginTop + flHeight * i -2;
-                ctx.beginPath();
-                ctx.moveTo(px, py);
-                ctx.lineTo(px+3, py+3);
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.moveTo(px+3, py);
-                ctx.lineTo(px, py+3);
-                ctx.stroke();
+                _drawLine(ctx, px, py, px+3, py+3 );
+                _drawLine(ctx, px+3, py, px, py+3 );
             }
 		}
 		else {
@@ -553,63 +561,43 @@ tabGuitar.prototype._drawtabguitar = function(cdName, cdFlet) {
     		}
 		}
 	}
-	// DrawTextがまだ使えないのでspanを配置。
-	var text = document.createElement('span');
-	text.appendChild( document.createTextNode( cdName ) );
-	text.style.color = this.params.tabColor;
-	text.style.fontSize ="10px";
-	text.style.position = "absolute";
-	text.style.top = "2px";
-	text.style.left = this.dpleft + "px";
-	this.stage.appendChild( text );
+	this._addSpanText(2, this.dpleft, cdName, this.params.tabColor);
 }
 
 tabGuitar.prototype._repeatMark = function(type) {
 
-	this.tabMarginLeft = this.dpleft;	
-	// シャープにする
-	// https://developer.mozilla.org/ja/Canvas_tutorial/Applying_styles_and_colors
-	// 線のスタイル参照
-	
+	this.tabMarginLeft = this.dpleft;
+	var drawCircle = function(ctx, left, top) {
+            ctx.beginPath();
+            ctx.arc(left, top, 2, 0, Math.PI*2, false);
+            ctx.fill();
+	}
+
 	if( type == 'start') {
     	with(this) {
     	   ctx.fillStyle = params.tabColor;	
     	   ctx.fillRect(tabMarginLeft, tabMarginTop, 2, flHeight* (this.line-1));
-
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft +8, tabMarginTop +10, 2, 0, Math.PI*2, false);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft +8, tabMarginTop +21, 2, 0, Math.PI*2, false);
-            ctx.fill();
-
-            tabMarginLeft -= 0.5;
-            ctx.beginPath();
-            ctx.lineWidth = 1;
-            ctx.moveTo(tabMarginLeft +4, tabMarginTop);
-            ctx.lineTo(tabMarginLeft +4, tabMarginTop + flHeight* (this.line-1) );
-            ctx.stroke();
-    	    dpleft += 20;
+    	   drawCircle(ctx, tabMarginLeft +8, tabMarginTop +10);
+    	   drawCircle(ctx, tabMarginLeft +8, tabMarginTop +21);
+    	   tabMarginLeft -= 0.5;
+    	   ctx.lineWidth = 1;
+    	   _drawLine(ctx,
+    	       tabMarginLeft +4, tabMarginTop,
+    	       tabMarginLeft +4, tabMarginTop + flHeight* (this.line-1) );
+    	   dpleft += 20;
     	}
 	}
 	else if( type == 'end') {
     	with(this) {
     	   ctx.fillStyle = params.tabColor;	
     	   ctx.fillRect(tabMarginLeft +6, tabMarginTop, 2, flHeight* (this.line-1));
-
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft, tabMarginTop +10, 2, 0, Math.PI*2, false);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft, tabMarginTop +21, 2, 0, Math.PI*2, false);
-            ctx.fill();
-
+            drawCircle(ctx, tabMarginLeft, tabMarginTop +10);
+            drawCircle(ctx, tabMarginLeft, tabMarginTop +21);
             tabMarginLeft -= 0.5;
-            ctx.beginPath();
             ctx.lineWidth = 1;
-            ctx.moveTo(tabMarginLeft +5, tabMarginTop);
-            ctx.lineTo(tabMarginLeft +5, tabMarginTop + flHeight* (this.line-1) );
-            ctx.stroke();
+            _drawLine(ctx,
+                tabMarginLeft +5, tabMarginTop,
+                tabMarginLeft +5, tabMarginTop + flHeight* (this.line-1) );
     	    dpleft += 20;
     	}
 	}
@@ -618,21 +606,11 @@ tabGuitar.prototype._repeatMark = function(type) {
     	   ctx.fillStyle = params.tabColor;	
     	   ctx.fillRect(tabMarginLeft +4, tabMarginTop, 2, flHeight* (this.line-1));
     	   ctx.fillRect(tabMarginLeft +7, tabMarginTop, 2, flHeight* (this.line-1));
-
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft, tabMarginTop +10, 2, 0, Math.PI*2, false);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft, tabMarginTop +21, 2, 0, Math.PI*2, false);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft +12, tabMarginTop +10, 2, 0, Math.PI*2, false);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(tabMarginLeft +12, tabMarginTop +21, 2, 0, Math.PI*2, false);
-            ctx.fill();
-    	    dpleft += 30;
+    	   drawCircle(ctx, tabMarginLeft, tabMarginTop +10);
+    	   drawCircle(ctx, tabMarginLeft, tabMarginTop +21);
+    	   drawCircle(ctx, tabMarginLeft+12, tabMarginTop +10);
+    	   drawCircle(ctx, tabMarginLeft+12, tabMarginTop +21);
+    	   dpleft += 30;
     	}
 	}
 }
@@ -641,24 +619,15 @@ tabGuitar.prototype._repeatNo = function(no) {
 	this.tabMarginLeft = this.dpleft;
 	with(this) {
 	   tabMarginLeft -= 0.5;
-	   ctx.beginPath();
 	   ctx.lineWidth = 1;
+	   ctx.beginPath();
 	   ctx.moveTo(tabMarginLeft +18, 10 );
 	   ctx.lineTo(tabMarginLeft +12, 10 );
 	   ctx.lineTo(tabMarginLeft +12, tabMarginTop + flHeight* (this.line-1) );
 	   ctx.stroke();
 	}
-	// DrawTextがまだ使えないのでspanを配置。
-	var text = document.createElement('span');
-	text.appendChild( document.createTextNode( no+"." ) );
-	text.style.color = this.params.tabColor;
-	text.style.fontSize ="10px";
-	text.style.position = "absolute";
-	text.style.top = "2px";
-	text.style.left = this.dpleft + "px";
-	this.stage.appendChild( text );
+	this._addSpanText(2, this.dpleft, no+"." );
 	this.dpleft += 30;
-
 }
 
 tabGuitar.prototype._parse = function(chord) {
@@ -697,28 +666,20 @@ tabGuitar.prototype._parse = function(chord) {
 	       this.dpleft += 30;
 	       break;
 	   default :
-        	if( !cdFlet ) { return false; }	
+	       if( !cdFlet ) { return false; }	
 	       this._drawtabguitar(cdName,cdFlet);
 	       this.dpleft += 100;
-	}	
-
+	}
 	return true;
 }
 
-tabGuitar.prototype._drawLyrics = function(lyrics) {
-	
+tabGuitar.prototype._drawLyrics = function(lyrics) {	
 	if(!lyrics) { return; }
 
 	// DrawTextがまだ使えないのでspanで歌詞を配置。
-	var text = document.createElement("span");
-	text.appendChild( document.createTextNode( lyrics ) );
-	text.style.color = this.params.lyColor;
-	text.style.width = this.params.cvwidth + "px";
-	text.style.fontSize ="10px";
-	text.style.position = "absolute";
-	text.style.top = this.tabMarginTop + 33+ "px";
-	text.style.left = this.tabMarginLeft + "px";
-	this.stage.appendChild( text );
+	this._addSpanText(
+	   this.tabMarginTop + 33, this.tabMarginLeft, 
+	   lyrics, this.params.lyColor );
 };
 
 tabGuitar.prototype.draw = function(chords, options) {
@@ -760,6 +721,6 @@ tabGuitar.prototype.draw = function(chords, options) {
 	}
 	else if( chords && typeof(chords) == 'string' ) {
 		if( this._parse(chords) ) { result = 1 };
-	}
+	}	
 	return result;
 };
