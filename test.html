@@ -428,7 +428,27 @@ _test.prototype.test_uke = function() {
 	return result;
 };
 
+_test.prototype.test_array = function() {
 
+	var result = {
+		id	:		"test15",
+		name	:	"コードを半角スペース区切りで複数渡す。",
+		summary	:	"|: C _ Am F G7 1 - C :|"
+	};
+	
+	var div = document.createElement('div');
+	div.id = result.id;
+	this.stage.appendChild(div);
+	var list = "|: C _ Am F G7 1- C :|";
+
+	var g1 = new tabGuitar( div.id );
+	if( g1.draw(list,{cvwidth:"650"}) == 9 ) { 
+    	result.result = true;
+	 }
+	else { result.result = false; }
+
+	return result;
+};
 
 window.onload = function() {
 	var cvTabGuitar = new test_runner("test");

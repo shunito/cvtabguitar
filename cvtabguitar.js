@@ -1,44 +1,9 @@
 /**
-	cvTabGuitar.js  - Guitar tab scores Canvas-
+	cvTabGuitar.js  - Canvas Guitar Tablature  -
 	canvasにギター譜を表示します。
-
-	Author: shunsuke Ito: shunsuke.ito@gmail.com
-	github: http://github.com/shunito/cvtabguitar/
-	
-	-Sample
-	  HTML :
-		<canvas id="tab1">  
-	  Javascriipt :
-		var g1 = new tabGuitar("tab1");
-		g1.draw("C@x32010"); 
-
-	-Lyrics
-		var g2 = new tabGuitar("tab2");
-		var list = [
-			{ "cd" : "Cm", "ly":"♪すいめんが" },
-			{ "cd" : "Gm", "ly":"ゆらぐ" },
-			{ "cd" : "Ab", "ly":"かぜの" },
-			{ "cd" : "Bb", "ly":"わが" },
-			{ "cd" : "Eb", "ly":"ひろがる" }
-		];
-		g2.draw(list, {cvwidth:"500"});
-
-	-Options (default Settings)
-		var params = {
-			bgColor: "#ffffff",
-			tabColor: "#000000",
-			lyColor: "#0000FF",
-			cvwidth: "100",
-			cvheight: "64",
-		　outline: true
-		};
-		
-	-Thanks
-	舘野氏のGD::Tab::Ukuleleにインスパイアされて作成されたにぽたん氏のGD::Tab::Guitarにインスパイアされて作成されました。
-
+	Author: shunsuke.ito@gmail.com
+	github: http://github.com/shunito/cvtabguitar/	
 **/
-
-
 
 var chordLists = {
 	"C"		:	"x32010",
@@ -584,7 +549,6 @@ tabGuitar.prototype._repeatMark = function(type) {
     	   _drawLine(ctx,
     	       tabMarginLeft +4, tabMarginTop,
     	       tabMarginLeft +4, tabMarginTop + flHeight* (this.line-1) );
-    	   dpleft += 20;
     	}
 	}
 	else if( type == 'end') {
@@ -598,7 +562,6 @@ tabGuitar.prototype._repeatMark = function(type) {
             _drawLine(ctx,
                 tabMarginLeft +5, tabMarginTop,
                 tabMarginLeft +5, tabMarginTop + flHeight* (this.line-1) );
-    	    dpleft += 20;
     	}
 	}
 	else {
@@ -610,7 +573,6 @@ tabGuitar.prototype._repeatMark = function(type) {
     	   drawCircle(ctx, tabMarginLeft, tabMarginTop +21);
     	   drawCircle(ctx, tabMarginLeft+12, tabMarginTop +10);
     	   drawCircle(ctx, tabMarginLeft+12, tabMarginTop +21);
-    	   dpleft += 30;
     	}
 	}
 }
@@ -627,7 +589,6 @@ tabGuitar.prototype._repeatNo = function(no) {
 	   ctx.stroke();
 	}
 	this._addSpanText(2, this.dpleft, no+"." );
-	this.dpleft += 30;
 }
 
 tabGuitar.prototype._parse = function(chord) {
@@ -652,15 +613,19 @@ tabGuitar.prototype._parse = function(chord) {
 	switch( cdName ) {
 	   case '#' :
     	   this._repeatNo(no);
+    	   this.dpleft += 30;
 	       break;
 	   case '|:' :
     	   this._repeatMark('start');
+    	   this.dpleft += 20;
 	       break;
 	   case ':|' :
     	   this._repeatMark('end');
+    	   this.dpleft += 20;
 	       break;
 	   case ':|:' :
     	   this._repeatMark('endstart');
+    	   this.dpleft += 30;
 	       break;
 	   case '_' :
 	       this.dpleft += 30;
@@ -708,8 +673,9 @@ tabGuitar.prototype.draw = function(chords, options) {
 	this._init();
 
 	if( chords && typeof(chords) == 'object' ) {
+	    var len = chords.length;
 		var count = 0;
-		for(var i=0; i < chords.length; i++ ) {
+		for(var i=0; i < len; i++ ) {
 			var chord = chords[i].cd;
 			var lyrics =  chords[i].ly;
 			if( this._parse(chord) ) { 
@@ -720,7 +686,16 @@ tabGuitar.prototype.draw = function(chords, options) {
 		result = count;
 	}
 	else if( chords && typeof(chords) == 'string' ) {
-		if( this._parse(chords) ) { result = 1 };
+	   var list = chords.split(" ");
+	   var len = list.length;
+	   var count =0;
+		for(var i=0; i < len; i++ ) {
+			var chord = list[i].replace(/^\s+|\s+$/g, "");
+			if( this._parse(chord) ) { 
+				count++;
+			};
+		}
+		result = count;
 	}	
 	return result;
 };
